@@ -1,0 +1,38 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30711.63
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Stubborn", "Stubborn\Stubborn.csproj", "{2F65A5A1-F898-45FC-A211-D0D3F1019793}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Stubborn.Tests", "Stubborn.Tests\Stubborn.Tests.csproj", "{AF348145-8BC9-4625-BF21-46081D570169}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Miscellaneous", "Miscellaneous", "{B65E9313-600B-4A1E-9B32-903592D7788B}"
+	ProjectSection(SolutionItems) = preProject
+		example-default.yaml = example-default.yaml
+		example-stubborn.yaml = example-stubborn.yaml
+		README.md = README.md
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2F65A5A1-F898-45FC-A211-D0D3F1019793}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2F65A5A1-F898-45FC-A211-D0D3F1019793}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2F65A5A1-F898-45FC-A211-D0D3F1019793}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2F65A5A1-F898-45FC-A211-D0D3F1019793}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AF348145-8BC9-4625-BF21-46081D570169}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AF348145-8BC9-4625-BF21-46081D570169}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AF348145-8BC9-4625-BF21-46081D570169}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AF348145-8BC9-4625-BF21-46081D570169}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A0E72DF4-A4B5-4B63-918A-B094CAD43C59}
+	EndGlobalSection
+EndGlobal

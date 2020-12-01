@@ -1,0 +1,84 @@
+################################################################################
+# This example demonstrates various ways in which extra attributes can be used
+# to make the output YAML file more readable and maintainable.
+################################################################################
+
+name: Build pipeline example
+version: 0.1
+
+#
+# Pool settings
+#
+poolGroup: windows
+poolRegion: eu
+cloud-based: true
+
+#
+# Variables
+#
+variables:
+  Environment: Test
+  ENABLE_EXPERIMENTAL: true
+
+#
+# Build
+#
+build:
+- name: Checkout
+  type: git.checkout
+  repo: https://example.com/git/example-repo
+
+- name: Prepare environment
+  type: shell
+  command: |-
+    tools\prepare_build.bat $(Environment)
+
+- name: Run the build
+  type: shell
+  command: |
+    echo Main build starting
+    set ENABLE_SPECIAL_THING=true
+    msbuild /p:Configuration=Release Project.sln
+
+#
+# Test
+#
+test:
+- name: Test common
+  type: test.run
+  parameters: "-Tests common/*"
+  checks:
+  - AllSucceeded
+  - MemoryLeaks
+
+- name: Test frontend
+  type: test.run
+  parameters: "-Tests frontend/* -RandomMask #RANDOM#"
+  checks:
+  - AllSucceeded
+
+- name: Test backend
+  type: test.run
+  parameters: "-Tests backend/*"
+  checks:
+  - AllSucceeded
+  - MemoryLeaks
+  timeoutSec: 4200  # 01:10:00
+
+- name: Clean up
+  condition: always
+  type: shell
+  command: |-
+    rm -rf /
+
+#
+# Publish
+#
+publish:
+- name: Upload package
+  type: artifacts.upload
+  mask: "*.zip"
+  signCert: 0000000000000000000000000000000000000000  # TODO: Get a cert before publishing
+  enabled: false
+
+# Now go make your own YAML files pretty :-)

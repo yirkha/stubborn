@@ -1,0 +1,63 @@
+name: Build pipeline example
+version: 0.1
+poolGroup: windows
+poolRegion: eu
+cloudBased: true
+variables:
+  Environment: Test
+  ENABLE_EXPERIMENTAL: true
+build:
+- repo: https://example.com/git/example-repo
+  name: Checkout
+  type: git.checkout
+  timeoutSec: 3600
+  enabled: true
+- command: tools\prepare_build.bat $(Environment)
+  name: Prepare environment
+  type: shell
+  timeoutSec: 3600
+  enabled: true
+- command: |
+    echo Main build starting
+    set ENABLE_SPECIAL_THING=true
+    msbuild /p:Configuration=Release Project.sln
+  name: Run the build
+  type: shell
+  timeoutSec: 3600
+  enabled: true
+test:
+- parameters: -Tests common/*
+  checks:
+  - AllSucceeded
+  - MemoryLeaks
+  name: Test common
+  type: test.run
+  timeoutSec: 3600
+  enabled: true
+- parameters: "-Tests frontend/* -RandomMask #RANDOM#"
+  checks: AllSucceeded
+  name: Test frontend
+  type: test.run
+  timeoutSec: 3600
+  enabled: true
+- parameters: -Tests backend/*
+  checks:
+  - AllSucceeded
+  - MemoryLeaks
+  name: Test backend
+  type: test.run
+  timeoutSec: 4200
+  enabled: true
+- command: rm -rf /
+  name: Clean up
+  condition: always
+  type: shell
+  timeoutSec: 3600
+  enabled: true
+publish:
+- mask: "*.zip"
+  signCert: 0000000000000000000000000000000000000000
+  name: Upload package
+  type: artifacts.upload
+  timeoutSec: 3600
+  enabled: false
