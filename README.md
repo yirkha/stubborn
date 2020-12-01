@@ -35,8 +35,10 @@ right thing when possible.
 
 ## Examples
 
-See [example-default.yaml] and compare it with [example-stubborn.yaml].
-Look at [Stubborn.Tests/Example.cs] to learn how the effects were achieved.
+See [example-default.yaml](example-default.yaml) and compare it with
+[example-stubborn.yaml](example-stubborn.yaml). Look at
+[Stubborn.Tests/Example.cs](Stubborn.Tests/Example.cs) to learn how
+the effects were achieved.
 
 - The file contains comments of various styles at various levels
 - There are blank lines between different sections
