@@ -12,6 +12,7 @@
     <RepositoryUrl>https://github.com/yirkha/stubborn</RepositoryUrl>
     <RepositoryType>Git</RepositoryType>
     <PackageTags>yaml serializer</PackageTags>
+    <Version>1.1.0</Version>
   </PropertyGroup>
 
 </Project>
