@@ -9,6 +9,8 @@ namespace Stubborn.Tests
 
         public string ReservedChars => "*yuck*";
 
+        public string Quotes => " I really \"like\" this ";
+
         public string TrailingWhitespace => "superfluous ";
 
         [YamlFormat(Quoted = true)]
@@ -21,6 +23,27 @@ namespace Stubborn.Tests
 
         [YamlFormat(Quoted = true)]
         public string Empty => "";
+
+        [YamlFormat(DoubleQuoted = true)]
+        public string DoubleEmpty => "";
+
+        [YamlFormat(Quoted = true)]
+        public string HasSingle => "console.log('Hello world')";
+
+        [YamlFormat(Quoted = true)]
+        public string HasDouble => "console.log(\"Hello world\")";
+
+        [YamlFormat(Quoted = true)]
+        public string PrefersDouble => "this.combines(\"quoting styles\").and('ends up').being(\"double 'quoted'\")";
+
+        [YamlName(" nasty key ")]
+        public string Irrelevant1 => "it's simple: everything works";
+
+        [YamlName("even\nworse")]
+        public string Irrelevant2 => "still ok";
+
+        [YamlName("sum\rof\\all\"fears")]
+        public string Irrelevant3 => "no problem";
     }
 
     class DummyBlockStrings
@@ -56,7 +79,7 @@ namespace Stubborn.Tests
                     ""));
 
             Assert.AreEqual(
-                "\"\":\n",
+                "'':\n",
                 YamlSerializer.Serialize(
                     new Dictionary<string, string>()
                     {
@@ -83,15 +106,23 @@ namespace Stubborn.Tests
         {
             Assert.AreEqual(
                 "specialChars: \"ttt\\ttab\"\n" +
-                "reservedChars: \"*yuck*\"\n" +
-                "trailingWhitespace: \"superfluous \"\n" +
-                "explicitlyQuoted: \"unnecessary\"\n" +
+                "reservedChars: '*yuck*'\n" +
+                "quotes: ' I really \"like\" this '\n" +
+                "trailingWhitespace: 'superfluous '\n" +
+                "explicitlyQuoted: 'unnecessary'\n" +
                 "multiline: \"jingle \\x07\\x07\\n\\\n" +
                 "  jingle \\x07\\x07\\n\\\n" +
                 "  \\  jingle all the way\"\n" +
                 "forcedBlock: \"\\\n" +
                 "  a new line \"\n" +
-                "empty: \"\"\n",
+                "empty: ''\n" +
+                "doubleEmpty: \"\"\n" +
+                "hasSingle: \"console.log('Hello world')\"\n" +
+                "hasDouble: 'console.log(\"Hello world\")'\n" +
+                "prefersDouble: \"this.combines(\\\"quoting styles\\\").and('ends up').being(\\\"double 'quoted'\\\")\"\n" +
+                "' nasty key ': \"it's simple: everything works\"\n" +
+                "\"even\\nworse\": still ok\n" +
+                "\"sum\\rof\\\\all\\\"fears\": no problem\n",
                 YamlSerializer.Serialize(
                     new DummyQuotedStrings()));
         }

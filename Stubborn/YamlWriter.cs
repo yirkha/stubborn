@@ -125,13 +125,31 @@ namespace Stubborn
             }
         }
 
+        public void AppendSingleQuotedString(string text)
+        {
+            _output.Append('\'');
+            int start = 0;
+            for (var i = 0; i < text.Length; i++)
+            {
+                var ch = (int)text[i];
+                if (ch == '\'')
+                {
+                    _output.Append(text, start, i - start);
+                    _output.Append("''");
+                    start = i + 1;
+                }
+            }
+            _output.Append(text, start, text.Length - start);
+            _output.Append('\'');
+        }
+
         private void AppendEscapedString(string input)
         {
             int start = 0;
             for (var i = 0; i < input.Length; i++)
             {
                 var ch = (int)input[i];
-                if (ch >= 32 && ch != '\\')
+                if (ch >= 32 && ch != '"' && ch != '\\')
                 {
                     continue;
                 }
@@ -149,6 +167,10 @@ namespace Stubborn
 
                     case 13:
                         _output.Append("\\r");
+                        break;
+
+                    case '"':
+                        _output.Append("\\\"");
                         break;
 
                     case '\\':
@@ -177,7 +199,6 @@ namespace Stubborn
                 {
                     if (first)
                     {
-                        first = false;
                         if (block)
                         {
                             _output.Append('\\');
@@ -189,11 +210,12 @@ namespace Stubborn
                         _output.Append("\\n\\");
                         StartNewLine();
                     }
-                    if (line.Length > 0 && line[0] == ' ')
+                    if (!first && line.Length > 0 && line[0] == ' ')
                     {
                         _output.Append('\\');
                     }
                     AppendEscapedString(line);
+                    first = false;
                 }
             }
             _output.Append('"');

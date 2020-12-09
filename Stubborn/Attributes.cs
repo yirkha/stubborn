@@ -154,9 +154,18 @@ namespace Stubborn
         /// Set to always serialize the value as a quoted flow string
         /// </summary>
         /// <remarks>
+        /// Single quotes are usually prefered for readability (less escaping).
         /// This option has effect only on values serialized as a string.
         /// </remarks>
         public bool Quoted { get => throw new NotImplementedException(); set => MaybeQuoted = value; }
+
+        /// <summary>
+        /// Set to always serialize the value as a double quoted flow string
+        /// </summary>
+        /// <remarks>
+        /// This option has effect only on values serialized as a string.
+        /// </remarks>
+        public bool DoubleQuoted { get => throw new NotImplementedException(); set => MaybeDoubleQuoted = value; }
 
         /// <summary>
         /// Set to always serialize the value as an indented block
@@ -176,6 +185,7 @@ namespace Stubborn
         internal int? MaybeBlankLinesAfter { get; set; }
         internal bool? MaybeAlwaysNested { get; set; }
         internal bool? MaybeQuoted { get; set; }
+        internal bool? MaybeDoubleQuoted { get; set; }
         internal bool? MaybeBlock { get; set; }
         internal int? MaybeIndentStep { get; set; }
     }

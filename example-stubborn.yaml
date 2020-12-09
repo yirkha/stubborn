@@ -46,20 +46,20 @@ build:
 test:
 - name: Test common
   type: test.run
-  parameters: "-Tests common/*"
+  parameters: '-Tests common/*'
   checks:
   - AllSucceeded
   - MemoryLeaks
 
 - name: Test frontend
   type: test.run
-  parameters: "-Tests frontend/* -RandomMask #RANDOM#"
+  parameters: '-Tests frontend/* -RandomMask #RANDOM#'
   checks:
   - AllSucceeded
 
 - name: Test backend
   type: test.run
-  parameters: "-Tests backend/*"
+  parameters: '-Tests backend/*'
   checks:
   - AllSucceeded
   - MemoryLeaks
@@ -77,7 +77,7 @@ test:
 publish:
 - name: Upload package
   type: artifacts.upload
-  mask: "*.zip"
+  mask: '*.zip'
   signCert: 0000000000000000000000000000000000000000  # TODO: Get a cert before publishing
   enabled: false
 

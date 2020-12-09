@@ -34,7 +34,7 @@ test:
   type: test.run
   timeoutSec: 3600
   enabled: true
-- parameters: "-Tests frontend/* -RandomMask #RANDOM#"
+- parameters: '-Tests frontend/* -RandomMask #RANDOM#'
   checks: AllSucceeded
   name: Test frontend
   type: test.run
@@ -55,7 +55,7 @@ test:
   timeoutSec: 3600
   enabled: true
 publish:
-- mask: "*.zip"
+- mask: '*.zip'
   signCert: 0000000000000000000000000000000000000000
   name: Upload package
   type: artifacts.upload

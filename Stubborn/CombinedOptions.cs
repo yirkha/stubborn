@@ -15,6 +15,7 @@ namespace Stubborn
         public int BlankLinesAfter { get; set; } = 0;
         public bool AlwaysNested { get; set; } = false;
         public bool Quoted { get; set; } = false;
+        public bool DoubleQuoted { get; set; } = false;
         public bool Block { get; set; } = false;
         public List<YamlCommentAttribute> Comments { get; } = new List<YamlCommentAttribute>();
 
@@ -73,6 +74,10 @@ namespace Stubborn
                     if (fmt.MaybeQuoted.HasValue)
                     {
                         Quoted = fmt.MaybeQuoted.Value;
+                    }
+                    if (fmt.MaybeDoubleQuoted.HasValue)
+                    {
+                        DoubleQuoted = fmt.MaybeDoubleQuoted.Value;
                     }
                     if (fmt.MaybeBlock.HasValue)
                     {

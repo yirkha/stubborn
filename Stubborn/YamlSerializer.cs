@@ -370,39 +370,65 @@ namespace Stubborn
 
         private void SerializeString(string str, bool isKey)
         {
-            if (string.IsNullOrEmpty(str) && !isKey && !_options.Quoted && !_options.Block)
+            if (string.IsNullOrEmpty(str) && !isKey && !_options.Quoted && !_options.DoubleQuoted && !_options.Block)
             {
                 return;
             }
 
             // These options should affect values, not the keys
             bool forceQuoted = _options.Quoted && !isKey;
+            bool forceDoubleQuoted = _options.DoubleQuoted && !isKey;
             bool forceBlock = _options.Block && !isKey;
 
-            if (forceQuoted || Regex.IsMatch(str, @"[\x00-\x09\x0B-\x1F]| $", RegexOptions.Multiline))
+            bool hasMultipleLines = (str.IndexOf('\n') >= 0);
+            bool hasSingleQuotes = (str.IndexOf('\'') >= 0);
+            bool hasSpecialChars = Regex.IsMatch(str, @"[\x00-\x09\x0B-\x1F]");
+            bool hasTrailingWhitespace = Regex.IsMatch(str, @" $", RegexOptions.Multiline);
+
+            if (hasSpecialChars ||
+                (hasTrailingWhitespace && (hasMultipleLines || forceBlock)) ||
+                forceDoubleQuoted ||
+                (forceQuoted && hasSingleQuotes))
             {
-                // The string contains special characters or trailing whitespace
+                // Special characters can be expressed only by a double-quoted
+                // string. The same with trailing whitespace on multiple lines,
+                // or when forced to use a nested block.
                 _writer.Indent(_options.IndentStep);
-                _writer.AppendDoubleQuotedString(str, !isKey, _options.Block);
+                _writer.AppendDoubleQuotedString(str, !isKey, forceBlock);
                 _writer.Undent();
                 return;
             }
-
-            bool multiline = (str.IndexOf('\n') >= 0);
-            if (!forceBlock && !multiline &&
+            else if (forceQuoted || (hasTrailingWhitespace && !forceBlock))
+            {
+                // Trailing whitespace needs to be quoted.
+                // On a single line, single quotes are preferred
+                _writer.AppendSingleQuotedString(str);
+                return;
+            }
+            else if (!forceBlock && !hasMultipleLines &&
                 Regex.IsMatch(str, @"^([^ \-?:,\[\]{}#&*!|>'""%@`]|[?:-](?=[^ ,\[\]{}]))([^:#]|(?<! )#|:(?! ))*$"))
             {
-                // The string is not forced to be a nested block, it is not
-                // multi-line and does not contain any special characters
+                // The string is not forced to be a nested block, it does not
+                // have multiple lines and does not contain any special
+                // characters nor forbidden sequences, it can be written as is
                 _writer.AppendLiteral(str);
                 return;
             }
-
-            if (forceBlock || (multiline && !isKey))
+            else if (forceBlock || (hasMultipleLines && !isKey))
             {
+                // Prefer a nested block for multi-line text
                 _writer.Indent(_options.IndentStep);
                 _writer.AppendLiteralStringBlock(str);
                 _writer.Undent();
+            }
+            else if (hasMultipleLines /* && isKey */)
+            {
+                _writer.AppendDoubleQuotedString(str, false, false);
+            }
+            else if (!hasSingleQuotes)
+            {
+                // Prefer single quotes
+                _writer.AppendSingleQuotedString(str);
             }
             else
             {
