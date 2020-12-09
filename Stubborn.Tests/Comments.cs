@@ -1,4 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Collections.Generic;
 
 namespace Stubborn.Tests
 {
@@ -54,6 +55,11 @@ namespace Stubborn.Tests
 
         [YamlIgnore]
         public string DynamicDisabledComment => null;
+    }
+
+    [YamlComment("keep me on the next line, will ya?")]
+    class DummyAnnotatedObject
+    {
     }
 
     [TestClass]
@@ -121,6 +127,29 @@ namespace Stubborn.Tests
                 "dynamicDisabled: 0\n",
                 YamlSerializer.Serialize(
                     new DummyDynamicComments()));
+        }
+
+        [TestMethod]
+        public void TestCommentBeforeDemandsNewLine ()
+        {
+            Assert.AreEqual(
+                "- normal: style\n" +
+                "-\n" +
+                "  # keep me on the next line, will ya?\n" +
+                "  commented: Stubborn.Tests.DummyAnnotatedObject\n",
+                YamlSerializer.Serialize(
+                    new List<object>()
+                    {
+                        new Dictionary<string, object>
+                        {
+                            { "normal", "style" }
+                        },
+                        new Dictionary<string, object>
+                        {
+                            { "commented", new DummyAnnotatedObject() }
+                        }
+                    }
+                ));
         }
     }
 }

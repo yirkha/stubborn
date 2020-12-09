@@ -12,12 +12,15 @@ namespace Stubborn.Tests
 
         public object Beta { get; set; }
 
+        [YamlFormat(IndentStep = 4)]
+        [YamlFormat(ToString = false)]
         public object Gamma { get; set; }
 
         [YamlIgnore]
         public object IgnoreMe => "bad";
 
         [YamlIgnore(IfEquals = true)]
+        [YamlIgnore(IfEqualsStr = "never gonna happen")]
         public object MeToo => true;
 
         [YamlIgnore(IfEqualsStr = "True")]
@@ -122,8 +125,8 @@ namespace Stubborn.Tests
                 "  beta:\n" +
                 "    beta: b\n" +
                 "gamma:\n" +
-                "  gamma:\n" +
-                "    gamma:\n",
+                "    gamma:\n" +
+                "        gamma:\n",
                 YamlSerializer.Serialize(new DummyObject()
                     {
                         Alpha = new DummyObject()
@@ -158,11 +161,11 @@ namespace Stubborn.Tests
                 "- alpha: 1\n" +
                 "- a: 1\n" +
                 "beta:\n" +
-                "  b:\n" +
-                "  - 2\n" +
-                "  - 2\n" +
-                "  bb:\n" +
-                "    beta: 2\n" +
+                "   b:\n" +
+                "   - 2\n" +
+                "   - 2\n" +
+                "   bb:\n" +
+                "      beta: 2\n" +
                 "gamma: end\n",
                 YamlSerializer.Serialize(new DummyObject()
                 {
@@ -193,6 +196,10 @@ namespace Stubborn.Tests
                         }
                     },
                     Gamma = "end"
+                },
+                new YamlSerializationOptions()
+                {
+                    IndentStep = 3
                 }));
         }
 
@@ -255,7 +262,6 @@ namespace Stubborn.Tests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(YamlSerializationTooDeep))]
         public void TestMaxDepth()
         {
             Assert.AreEqual(
@@ -278,21 +284,22 @@ namespace Stubborn.Tests
                         MaxDepth = 3
                     }));
 
-            YamlSerializer.Serialize(
-                new DummyObject()
-                {
-                    Alpha = new DummyObject()
+            Assert.ThrowsException<YamlSerializationTooDeep>(() =>
+                YamlSerializer.Serialize(
+                    new DummyObject()
                     {
                         Alpha = new DummyObject()
                         {
                             Alpha = new DummyObject()
+                            {
+                                Alpha = new DummyObject()
+                            }
                         }
-                    }
-                },
-                new YamlSerializationOptions
-                {
-                    MaxDepth = 3
-                });
+                    },
+                    new YamlSerializationOptions
+                    {
+                        MaxDepth = 3
+                    }));
         }
     }
 }

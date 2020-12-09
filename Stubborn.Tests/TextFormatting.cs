@@ -102,6 +102,26 @@ namespace Stubborn.Tests
                 new string[]
                 {
                     "abc",
+                    "defghijklmno"
+                },
+                TextFormatting.WordWrap(
+                    "abc defghijklmno",
+                    10).ToArray());
+
+            CollectionAssert.AreEqual(
+                new string[]
+                {
+                    "abc",
+                    "defghijklmno"
+                },
+                TextFormatting.WordWrap(
+                    "abc defghijklmno ",
+                    10).ToArray());
+
+            CollectionAssert.AreEqual(
+                new string[]
+                {
+                    "abc",
                     "defghijklmno",
                     "pqr"
                 },

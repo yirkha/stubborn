@@ -6,7 +6,6 @@ namespace Stubborn.Tests
     [YamlIgnore]
     class DummyIgnoredItem
     {
-        public override string ToString() => "meh";
     }
 
     [YamlFormat(AlwaysNested = true)]
@@ -48,6 +47,12 @@ namespace Stubborn.Tests
                 "test\n",
                 YamlSerializer.Serialize(
                     new object[] { null, "test" }
+                ));
+
+            Assert.AreEqual(
+                "test\n",
+                YamlSerializer.Serialize(
+                    new object[] { "test", null, null }
                 ));
 
             Assert.AreEqual(
@@ -109,7 +114,6 @@ namespace Stubborn.Tests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(YamlSerializationTooDeep))]
         public void TestMaxDepth()
         {
             Assert.AreEqual(
@@ -130,21 +134,22 @@ namespace Stubborn.Tests
                         MaxDepth = 3
                     }));
 
-            YamlSerializer.Serialize(
-                new List<object>()
-                {
+            Assert.ThrowsException<YamlSerializationTooDeep>(() =>
+                YamlSerializer.Serialize(
                     new List<object>()
                     {
                         new List<object>()
                         {
                             new List<object>()
+                            {
+                                new List<object>()
+                            }
                         }
-                    }
-                },
-                new YamlSerializationOptions
-                {
-                    MaxDepth = 3
-                });
+                    },
+                    new YamlSerializationOptions
+                    {
+                        MaxDepth = 3
+                    }));
         }
     }
 }

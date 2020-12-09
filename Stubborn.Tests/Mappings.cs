@@ -73,7 +73,6 @@ namespace Stubborn.Tests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(YamlSerializationTooDeep))]
         public void TestMaxDepth()
         {
             Assert.AreEqual(
@@ -98,23 +97,24 @@ namespace Stubborn.Tests
                         MaxDepth = 3
                     }));
 
-            YamlSerializer.Serialize(
-                new Dictionary<object, object>()
-                {
-                    { "aaa", new Dictionary<object, object>()
-                        {
-                            { "aaa", new Dictionary<object, object>()
-                                {
-                                    { "aaa", new Dictionary<object, object>() }
+            Assert.ThrowsException<YamlSerializationTooDeep>(() =>
+                YamlSerializer.Serialize(
+                    new Dictionary<object, object>()
+                    {
+                        { "aaa", new Dictionary<object, object>()
+                            {
+                                { "aaa", new Dictionary<object, object>()
+                                    {
+                                        { "aaa", new Dictionary<object, object>() }
+                                    }
                                 }
                             }
                         }
-                    }
-                },
-                new YamlSerializationOptions
-                {
-                    MaxDepth = 3
-                });
+                    },
+                    new YamlSerializationOptions
+                    {
+                        MaxDepth = 3
+                    }));
         }
     }
 }
